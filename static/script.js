@@ -7,6 +7,7 @@ function resizeCanvas() {
     const rect = canvas.getBoundingClientRect();
     canvas.width = rect.width;
     canvas.height = rect.height;
+    ctx.lineCap = 'round';
 }
 
 resizeCanvas();

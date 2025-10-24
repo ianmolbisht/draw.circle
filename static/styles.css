@@ -7,7 +7,7 @@ body {
   height: 100vh;
   margin: 0;
   overflow-x: hidden;
-  touch-action: manipulation;
+  /* touch-action: manipulation; */
 }
 
 canvas {
