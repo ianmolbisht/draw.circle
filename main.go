@@ -43,18 +43,15 @@ func submitScore(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    // Check if user exists and get current score
     var currentScore int
     err := db.QueryRow("SELECT score FROM scores WHERE name = ?", payload.Name).Scan(&currentScore)
     
     if err == sql.ErrNoRows {
-        // User doesn't exist, insert new record
         _, err = db.Exec("INSERT INTO scores(name, score) VALUES(?, ?)", payload.Name, payload.Score)
     } else if err != nil {
         http.Error(w, "Database error", 500)
         return
     } else {
-        // User exists, update only if new score is higher
         if payload.Score > currentScore {
             _, err = db.Exec("UPDATE scores SET score = ? WHERE name = ?", payload.Score, payload.Name)
         }
