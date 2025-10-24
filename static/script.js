@@ -2,8 +2,16 @@ const userName = prompt("Enter your name:");
 
 const canvas = document.getElementById('draw');
 const ctx = canvas.getContext('2d');
-canvas.width = 400;
-canvas.height = 400;
+
+function resizeCanvas() {
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+}
+
+resizeCanvas();
+
+window.addEventListener('resize', resizeCanvas);
 
 let points = [];
 let drawing = false;
@@ -28,6 +36,43 @@ canvas.addEventListener('mousemove', e => {
 });
 
 canvas.addEventListener('mouseup', () => {
+    drawing = false;
+    ctx.beginPath();
+    computeScore();
+});
+
+// Touch events for mobile devices
+canvas.addEventListener('touchstart', e => {
+    e.preventDefault(); // Prevent scrolling
+    drawing = true;
+    points = [];
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+    
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches[0];
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    points.push({x, y});
+    ctx.moveTo(x, y);
+});
+
+canvas.addEventListener('touchmove', e => {
+    e.preventDefault(); // Prevent scrolling
+    if (!drawing) return;
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches[0];
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    points.push({x, y});
+    ctx.lineTo(x, y);
+    ctx.strokeStyle = 'lime';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+});
+
+canvas.addEventListener('touchend', e => {
+    e.preventDefault(); // Prevent scrolling
     drawing = false;
     ctx.beginPath();
     computeScore();
